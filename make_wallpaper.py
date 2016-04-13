@@ -17,13 +17,15 @@ def image_resize(img, size=(1500, 1100)):
 
 def image_merge(images, output_dir='output', output_name='merge.jpg', \
                 restriction_max_width=None, restriction_max_height=None, column=8):
-
+    
     max_width = 1920
     max_height = 1080
     # 产生一张空白图
     new_img = Image.new('RGB', (max_width, max_height), 255)
     # 合并
-    x = y = 0
+    side = 1
+    y = 0
+    x = max_width / 2
     for img_path in images:
         if os.path.exists(img_path):
             img = Image.open(img_path)
@@ -35,12 +37,25 @@ def image_merge(images, output_dir='output', output_name='merge.jpg', \
             
             img = image_resize(img, size=(new_width, new_height))
             width, height = img.size
-            new_img.paste(img, (x, y))
             
-            y += height
-            if y >= max_height:
-                x += width
-                y = 0
+            if side > 0:
+                new_img.paste(img, (x, y))
+                if y >= max_height:
+                    x += width
+                    y = 0
+                else:
+                    y += height
+            if side < 0:
+                new_img.paste(img, (x - width, y))
+                if y >= max_height:
+                    x -= width
+                    y = 0
+                else:
+                    y += height
+            if x > max_width:
+                side = -1
+                x = max_width / 2
+
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -51,10 +66,10 @@ def image_merge(images, output_dir='output', output_name='merge.jpg', \
 def compare(x, y):
     stat_x = os.stat(DIR + "/" + x)
     stat_y = os.stat(DIR + "/" + y)
-    if stat_x.st_ctime < stat_y.st_ctime:
-        return -1
-    elif stat_x.st_ctime > stat_y.st_ctime:
+    if stat_x.st_mtime < stat_y.st_mtime:
         return 1
+    elif stat_x.st_mtime > stat_y.st_mtime:
+        return -1
     else:
         return 0
 
@@ -76,11 +91,10 @@ if __name__ == '__main__':
     for iterm in iterms:
         if os.path.splitext(iterm)[1] == '.gif':
             continue
-        if count > 30:
+        if count > 50:
             break;
         wlist.append(DIR + os.sep + iterm)
         count += 1
-    random.shuffle(wlist)
     image_merge(images=wlist, column=7)
 
     win32gui.SystemParametersInfo(win32con.SPI_SETDESKWALLPAPER, "." + os.sep + "output" + os.sep + "merge.jpg", 1+2)
