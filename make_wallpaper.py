@@ -25,7 +25,7 @@ def image_merge(images, output_dir='output', output_name='merge.jpg', \
     # 合并
     side = 1
     y = 0
-    x = max_width / 2
+    x = max_width / 3
     for img_path in images:
         if os.path.exists(img_path):
             img = Image.open(img_path)
@@ -39,22 +39,24 @@ def image_merge(images, output_dir='output', output_name='merge.jpg', \
             width, height = img.size
             
             if side > 0:
-                new_img.paste(img, (x, y))
+                #检查y的位置有没有超出范围,超出的话重置一下
                 if y >= max_height:
                     x += width
                     y = 0
-                else:
-                    y += height
+                #贴图
+                new_img.paste(img, (x, y))
+                #y累加
+                y += height
             if side < 0:
-                new_img.paste(img, (x - width, y))
                 if y >= max_height:
                     x -= width
                     y = 0
-                else:
-                    y += height
+                new_img.paste(img, (x - width, y))
+                y += height
             if x > max_width:
                 side = -1
-                x = max_width / 2
+                x = max_width / 3
+                y = 0
 
 
     if not os.path.exists(output_dir):
