@@ -76,7 +76,7 @@ if __name__ == '__main__':
     for iterm in iterms:
         if os.path.splitext(iterm)[1] == '.gif':
             continue
-        if count > 50:
+        if count > 30:
             break;
         wlist.append(DIR + os.sep + iterm)
         count += 1
