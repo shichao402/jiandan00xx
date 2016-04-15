@@ -3,11 +3,12 @@ import os
 import Image
 import random
 import win32api, win32con, win32gui
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 
 def image_resize(img, size=(1500, 1100)):
     try:
         if img.mode not in ('L', 'RGB'):
-            print "RGB"
             img = img.convert('RGB')
         img = img.resize(size, Image.ANTIALIAS)
     except Exception, e:
@@ -15,9 +16,12 @@ def image_resize(img, size=(1500, 1100)):
         pass
     return img
 
-def image_merge(images, output_dir='output', output_name='merge.jpg', \
+def image_merge(images_dir, output_dir='output', output_name='merge.jpg', \
                 restriction_max_width=None, restriction_max_height=None, column=8):
-    
+    images = os.listdir(images_dir)
+
+    images.sort(compare)
+
     max_width = 1920
     max_height = 1080
     # 产生一张空白图
@@ -27,8 +31,16 @@ def image_merge(images, output_dir='output', output_name='merge.jpg', \
     y = 0
     x = max_width / 3
     for img_path in images:
+        if os.path.splitext(img_path)[1] == '.gif':
+            continue
+        img_path = images_dir + os.sep + img_path
         if os.path.exists(img_path):
-            img = Image.open(img_path)
+            print img_path
+            try:
+                img = Image.open(img_path)
+            except Exception, e:
+                print "can not load image:", img_path
+                continue
             width, height = img.size
 
             resize = float(max_width/ column) / width
@@ -57,6 +69,8 @@ def image_merge(images, output_dir='output', output_name='merge.jpg', \
                 side = -1
                 x = max_width / 3
                 y = 0
+            if x < 0:
+                break
 
 
     if not os.path.exists(output_dir):
@@ -76,28 +90,14 @@ def compare(x, y):
         return 0
 
 if __name__ == '__main__':
-    from scrapy.crawler import CrawlerProcess
-    from scrapy.utils.project import get_project_settings
     process = CrawlerProcess(get_project_settings())
     process.crawl('ooxx')
     process.start() # the script will block here until the crawling is finished
-
+    
     root = os.path.split(os.path.realpath(__file__))[0]
-    DIR = root + os.sep + "downloads" + os.sep + "images" + os.sep + "full"
+    DIR = get_project_settings().get('IMAGES_STORE') + os.sep + "full"
 
-    iterms = os.listdir(DIR)
-
-    iterms.sort(compare)
-    count = 0
-    wlist = []
-    for iterm in iterms:
-        if os.path.splitext(iterm)[1] == '.gif':
-            continue
-        if count > 50:
-            break;
-        wlist.append(DIR + os.sep + iterm)
-        count += 1
-    image_merge(images=wlist, column=7)
+    image_merge(images_dir=DIR, column=8)
 
     win32gui.SystemParametersInfo(win32con.SPI_SETDESKWALLPAPER, "." + os.sep + "output" + os.sep + "merge.jpg", 1+2)
 
