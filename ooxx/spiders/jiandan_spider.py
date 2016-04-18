@@ -12,11 +12,11 @@ class Spider_jiandan(scrapy.Spider):
         "http://jandan.net/ooxx"
     ]
 
-    max_page = 3;
+    max_page = 5;
 
     def __init__(self):
         self.cookies = {
-            'bad-click-load':r'off',
+            'bad-click-load':r'on',
             'nsfw-click-load':r'off'
         }
 
@@ -28,7 +28,7 @@ class Spider_jiandan(scrapy.Spider):
         yield item
 
         item = ooxxItem()
-        preachs=response.xpath('//ol[@class="commentlist"]//div[@class="text"]//a[@class="view_img_link"]')
+        preachs=response.xpath('//ol[@class="commentlist"]//div[@class="text"]/p[not(contains(@style,"display:none"))]/a[@class="view_img_link"]')
         for preach in preachs:
             item['type'] = 1
             item['url'] = preach.xpath('@href').extract()[0]

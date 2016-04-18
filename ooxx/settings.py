@@ -33,3 +33,5 @@ IMAGES_MIN_WIDTH = 100
 
 COOKIES_ENABLED=True
 
+LOG_STDOUT = True
+LOG_FILE = os.path.split(os.path.realpath(__file__))[0] + os.sep + '..' + os.sep  + 'scrapy_output.txt'
