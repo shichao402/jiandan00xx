@@ -14,7 +14,10 @@ BOT_NAME = 'ooxx'
 
 SPIDER_MODULES = ['ooxx.spiders']
 NEWSPIDER_MODULE = 'ooxx.spiders'
-
+DOWNLOADER_MIDDLEWARES = {  
+    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware' : None,  
+    'ooxx.useragent.RotateUserAgentMiddleware' :400  
+}  
 ITEM_PIPELINES = {
 	'ooxx.pipelines.ooxxDuplicatesPipeline': 100,
 	'ooxx.pipelines.MyImagesPipeline': 500,
@@ -22,7 +25,7 @@ ITEM_PIPELINES = {
 }
 
 CONCURRENT_REQUESTS=2
-DOWNLOAD_DELAY=3
+DOWNLOAD_DELAY=5
 CONCURRENT_REQUESTS_PER_DOMAIN=2
 CONCURRENT_REQUESTS_PER_IP=2
 
@@ -31,7 +34,7 @@ IMAGES_STORE = os.path.split(os.path.realpath(__file__))[0] + os.sep + '..' + os
 IMAGES_MIN_HEIGHT = 100
 IMAGES_MIN_WIDTH = 100
 
-COOKIES_ENABLED=True
+COOKIES_ENABLED=False
 
 LOG_STDOUT = True
-LOG_FILE = os.path.split(os.path.realpath(__file__))[0] + os.sep + '..' + os.sep  + 'scrapy_output.txt'
+#LOG_FILE = os.path.split(os.path.realpath(__file__))[0] + os.sep + '..' + os.sep  + 'scrapy_output.txt'

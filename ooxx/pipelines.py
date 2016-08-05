@@ -61,6 +61,6 @@ class MyImagesPipeline(ImagesPipeline):
                     ooxx_model.save()
                     f.close()
                 except Exception, e:
-                    f=null
+                    f=None
                     #raise e
         return item

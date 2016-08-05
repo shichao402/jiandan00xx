@@ -1,8 +1,9 @@
 # coding=utf8
 import os
-import Image
+from PIL import Image
 import random
 import win32api, win32con, win32gui
+import ctypes
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
@@ -20,10 +21,11 @@ def image_merge(images_dir, output_dir='output', output_name='merge.jpg', \
                 restriction_max_width=None, restriction_max_height=None, column=8):
     images = os.listdir(images_dir)
 
-    images.sort(compare)
+    random.shuffle(images)
+    #images.sort(compare)
 
-    max_width = 1920
-    max_height = 1080
+    max_width = 2560
+    max_height = 1440
     # 产生一张空白图
     new_img = Image.new('RGB', (max_width, max_height), 255)
     # 合并
@@ -99,5 +101,6 @@ if __name__ == '__main__':
 
     image_merge(images_dir=DIR, column=8)
 
-    win32gui.SystemParametersInfo(win32con.SPI_SETDESKWALLPAPER, "." + os.sep + "output" + os.sep + "merge.jpg", 1+2)
+    SPI_SETDESKWALLPAPER = 20 
+    ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, "." + os.sep + "output" + os.sep + "merge.jpg" , 0)
 
