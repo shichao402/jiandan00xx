@@ -51,3 +51,4 @@ output/*
 *.pyc
 dumplicate.txt
 orator.yml
+scrapy_output.txt
