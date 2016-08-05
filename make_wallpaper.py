@@ -21,8 +21,8 @@ def image_merge(images_dir, output_dir='output', output_name='merge.jpg', \
                 restriction_max_width=None, restriction_max_height=None, column=8):
     images = os.listdir(images_dir)
 
-    random.shuffle(images)
-    #images.sort(compare)
+    #random.shuffle(images)
+    images.sort(compare)
 
     max_width = 2560
     max_height = 1440
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     root = os.path.split(os.path.realpath(__file__))[0]
     DIR = get_project_settings().get('IMAGES_STORE') + os.sep + "full"
 
-    image_merge(images_dir=DIR, column=8)
+    image_merge(images_dir=DIR, column=12)
 
     SPI_SETDESKWALLPAPER = 20 
     ctypes.windll.user32.SystemParametersInfoA(SPI_SETDESKWALLPAPER, 0, "." + os.sep + "output" + os.sep + "merge.jpg" , 0)
