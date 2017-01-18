@@ -37,7 +37,6 @@ def image_merge(images_dir, output_dir='output', output_name='merge.jpg', \
             continue
         img_path = images_dir + os.sep + img_path
         if os.path.exists(img_path):
-            print img_path
             try:
                 img = Image.open(img_path)
             except Exception, e:
@@ -71,7 +70,7 @@ def image_merge(images_dir, output_dir='output', output_name='merge.jpg', \
                 side = -1
                 x = max_width / 3
                 y = 0
-            if x < 0:
+            if x - width < 0:
                 break
 
 
