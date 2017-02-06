@@ -43,7 +43,10 @@ class MyImagesPipeline(ImagesPipeline):
 
     def get_media_requests(self, item, info):  
         for image_url in item['image_urls']:  
-            yield Request(image_url)  
+            if image_url[0:2] == "//":
+                yield Request("http:"+image_url)
+            else:
+                yield Request(image_url)
 
     def item_completed(self, results, item, info):  
         base_image_path = get_project_settings()['IMAGES_STORE']
