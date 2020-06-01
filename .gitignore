@@ -52,3 +52,4 @@ output/*
 dumplicate.txt
 orator.yml
 scrapy_output.txt
+/build/
